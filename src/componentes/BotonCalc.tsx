@@ -7,6 +7,7 @@ interface Props {
   color?: string;
   colorTexto?: string;
   ancho?: boolean;
+  accion: (accion: string) => void;
 }
 
 //AL PONER COLOR = "#2D2D2D", le estamos diciendo que si no se manda el color tome ese
@@ -15,9 +16,10 @@ export default function BotonCalc({
   color = '#2D2D2D',
   colorTexto = 'white',
   ancho = false,
+  accion,
 }: Props) {
   return (
-    <TouchableOpacity>
+    <TouchableOpacity onPress={() => accion(texto)}>
       <View
         style={{
           ...styles.boton,
