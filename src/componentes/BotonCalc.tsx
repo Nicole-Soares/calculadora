@@ -1,15 +1,31 @@
 import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, TouchableOpacity} from 'react-native';
 import {styles} from '../theme/appTheme';
 
 interface Props {
   texto: string;
   color?: string;
+  colorTexto?: string;
+  ancho?: boolean;
 }
-export default function BotonCalc({texto, color = '#2D2D2D'}: Props) {
+
+//AL PONER COLOR = "#2D2D2D", le estamos diciendo que si no se manda el color tome ese
+export default function BotonCalc({
+  texto,
+  color = '#2D2D2D',
+  colorTexto = 'white',
+  ancho = false,
+}: Props) {
   return (
-    <View style={{...styles.boton, backgroundColor: color}}>
-      <Text style={styles.botonTexto}>{texto}</Text>
-    </View>
+    <TouchableOpacity>
+      <View
+        style={{
+          ...styles.boton,
+          backgroundColor: color,
+          width: ancho ? 180 : 80,
+        }}>
+        <Text style={{...styles.botonTexto, color: colorTexto}}>{texto}</Text>
+      </View>
+    </TouchableOpacity>
   );
 }
