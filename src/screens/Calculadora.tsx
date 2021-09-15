@@ -1,18 +1,93 @@
-import React, {useState} from 'react';
+import React, {useState, useRef} from 'react';
 import {Text, View} from 'react-native';
 import BotonCalc from '../componentes/BotonCalc';
 import {styles} from '../theme/appTheme';
 
+enum Operadores {
+  sumar,
+  restar,
+  multiplicar,
+  division,
+}
+
 export default function Calculadora() {
-  const [numero, setNumero] = useState('100');
+  const [numero, setNumero] = useState('0');
   const [numeroAnterior, setNumeroAnterior] = useState('0');
+  const ultimaOperacion = useRef<Operadores>();
 
   const limpiar = () => {
     setNumero('0');
+    setNumeroAnterior('0');
   };
   const armarNumero = (numeroTexto: string) => {
-    setNumero(numero + numeroTexto);
+    //no aceptar doble punto
+    if (numero.includes('.') && numeroTexto === '.') {
+      return;
+    }
+    if (numero.startsWith('0') || numero.startsWith('-0')) {
+      //Punto decimal
+      if (numeroTexto === '.') {
+        setNumero(numero + numeroTexto);
+      }
+      //Evaluar si es otro cero y hay un punto
+      else if (numeroTexto === '0' && numero.includes('.')) {
+        setNumero(numero + numeroTexto);
+      }
+      // evaluar si es diferente de cero y no tiene un punto
+      else if (numeroTexto !== '0' && numero.includes('.')) {
+        setNumero(numeroTexto);
+      }
+      //evitar el 0000.0
+      else if (numeroTexto === '0' && !numero.includes('.')) {
+        setNumero(numero);
+      }
+    } else {
+      setNumero(numero + numeroTexto);
+    }
   };
+
+  const positivoNegativo = () => {
+    if (numero.includes('-')) {
+      setNumero(numero.replace('-', ' '));
+    } else {
+      setNumero(numero.replace('', '-'));
+    }
+  };
+
+  const btnDelete = () => {
+    let numeroTemp = numero;
+    if (numeroTemp.length > 1) {
+      setNumero(numeroTemp.slice(0, -1));
+    } else {
+      setNumero('0');
+    }
+  };
+
+  const cambiarNumeroPorAnterior = () => {
+    setNumeroAnterior(numero);
+    setNumero('0');
+  };
+
+  const sumar = () => {
+    cambiarNumeroPorAnterior();
+    ultimaOperacion.current = Operadores.sumar;
+  };
+
+  const restar = () => {
+    cambiarNumeroPorAnterior();
+    ultimaOperacion.current = Operadores.restar;
+  };
+
+  const multiplicar = () => {
+    cambiarNumeroPorAnterior();
+    ultimaOperacion.current = Operadores.multiplicar;
+  };
+
+  const division = () => {
+    cambiarNumeroPorAnterior();
+    ultimaOperacion.current = Operadores.division;
+  };
+
   return (
     <View style={styles.calculadoraConteiner}>
       <Text style={styles.resultadoPequeno}>{numeroAnterior}</Text>
@@ -31,38 +106,38 @@ export default function Calculadora() {
           texto="+/-"
           color="#9B9B9B"
           colorTexto="black"
-          accion={limpiar}
+          accion={positivoNegativo}
         />
         <BotonCalc
           texto="del"
           color="#9B9B9B"
           colorTexto="black"
-          accion={limpiar}
+          accion={btnDelete}
         />
         <BotonCalc
           texto="/"
           color="#FF9427"
           colorTexto="black"
-          accion={limpiar}
+          accion={division}
         />
       </View>
       <View style={styles.fila}>
         <BotonCalc texto="7" colorTexto="white" accion={armarNumero} />
         <BotonCalc texto="8" colorTexto="white" accion={armarNumero} />
         <BotonCalc texto="9" colorTexto="white" accion={armarNumero} />
-        <BotonCalc texto="X" colorTexto="white" accion={limpiar} />
+        <BotonCalc texto="X" colorTexto="white" accion={multiplicar} />
       </View>
       <View style={styles.fila}>
         <BotonCalc texto="4" colorTexto="white" accion={armarNumero} />
         <BotonCalc texto="5" colorTexto="white" accion={armarNumero} />
         <BotonCalc texto="6" colorTexto="white" accion={armarNumero} />
-        <BotonCalc texto="-" colorTexto="white" accion={limpiar} />
+        <BotonCalc texto="-" colorTexto="white" accion={restar} />
       </View>
       <View style={styles.fila}>
         <BotonCalc texto="1" colorTexto="white" accion={armarNumero} />
         <BotonCalc texto="2" colorTexto="white" accion={armarNumero} />
         <BotonCalc texto="3" colorTexto="white" accion={armarNumero} />
-        <BotonCalc texto="+" colorTexto="white" accion={limpiar} />
+        <BotonCalc texto="+" colorTexto="white" accion={sumar} />
       </View>
       <View style={styles.fila}>
         <BotonCalc texto="0" colorTexto="white" ancho accion={armarNumero} />
