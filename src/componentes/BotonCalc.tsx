@@ -7,7 +7,7 @@ interface Props {
   color?: string;
   colorTexto?: string;
   ancho?: boolean;
-  accion: (accion: string) => void;
+  accion: (numeroTexto: string) => void;
 }
 
 //AL PONER COLOR = "#2D2D2D", le estamos diciendo que si no se manda el color tome ese
