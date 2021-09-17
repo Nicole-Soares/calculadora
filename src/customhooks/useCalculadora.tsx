@@ -1,15 +1,18 @@
-import {useState, useRef} from 'react';
-enum Operadores {
+import {useState} from 'react';
+/*enum Operadores {
   sumar,
   restar,
   multiplicar,
   dividir,
-}
+}*/
 
 export default function useCalculadora() {
   const [numero, setNumero] = useState('0');
   const [numeroAnterior, setNumeroAnterior] = useState('0');
-  const ultimaOperacion = useRef<Operadores>();
+  const [sumar, setSumar] = useState(false);
+  const [restar, setRestar] = useState(false);
+  const [multiplicar, setmultiplicar] = useState(false);
+  const [dividir, setdividir] = useState(false);
 
   const limpiar = () => {
     setNumero('0');
@@ -72,36 +75,40 @@ export default function useCalculadora() {
 
   const btnDividir = () => {
     cambiarNumPorAnterior();
-    ultimaOperacion.current = Operadores.dividir;
+    setdividir(true);
   };
 
   const btnMultiplicar = () => {
     cambiarNumPorAnterior();
-    ultimaOperacion.current = Operadores.multiplicar;
+    setmultiplicar(true);
   };
 
   const btnRestar = () => {
     cambiarNumPorAnterior();
-    ultimaOperacion.current = Operadores.restar;
+    setRestar(true);
   };
 
   const btnSumar = () => {
     cambiarNumPorAnterior();
-    ultimaOperacion.current = Operadores.sumar;
+    setSumar(true);
   };
 
   const calcular = () => {
     const num1 = Number(numero);
     const num2 = Number(numeroAnterior);
 
-    if (ultimaOperacion.current === Operadores.sumar) {
+    if (sumar) {
       setNumero(`${num1 + num2}`);
-    } else if (ultimaOperacion.current === Operadores.restar) {
+      setSumar(false);
+    } else if (restar) {
       setNumero(`${num2 - num1}`);
-    } else if (ultimaOperacion.current === Operadores.multiplicar) {
+      setRestar(false);
+    } else if (multiplicar) {
       setNumero(`${num1 * num2}`);
-    } else if (ultimaOperacion.current === Operadores.dividir) {
+      setmultiplicar(false);
+    } else if (dividir) {
       setNumero(`${num2 / num1}`);
+      setDividir(false);
     }
 
     setNumeroAnterior('0');
